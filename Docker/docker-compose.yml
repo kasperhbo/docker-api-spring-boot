@@ -1,0 +1,40 @@
+services:
+  mysql:
+    container_name: sql-server-lts
+    hostname: sql-server-lts
+    platform: linux/amd64
+    env_file:
+      - .env
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3384:3306"
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - data:/var/lib/mysql
+      - logs:/var/log/mysql
+      - backups:/var/backups/mysql
+    restart: always
+
+volumes:
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./mysql/data
+      o: bind
+  logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./mysql/logs
+      o: bind
+  backups:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./mysql/backups
+      o: bind
